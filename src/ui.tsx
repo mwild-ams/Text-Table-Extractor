@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import './ui.css'
+import '../node_modules/figma-plugin-ds/dist/figma-plugin-ds.css'
 
 declare function require(path: string): any
 
@@ -25,9 +26,9 @@ class App extends React.Component {
     return <div>
       <img src={require('./logo.svg')} />
       <h2>Rectangle Creator</h2>
-      <p>Count: <input ref={this.countRef} /></p>
-      <button id="create" onClick={this.onCreate}>Create</button>
-      <button onClick={this.onCancel}>Cancel</button>
+      <p className="label">Count: <input ref={this.countRef} className="input__field"/></p>
+      <button id="create" onClick={this.onCreate} className='button button--primary'>Create</button>
+      <button onClick={this.onCancel} className='button button--secondary'>Cancel</button>
     </div>
   }
 }
