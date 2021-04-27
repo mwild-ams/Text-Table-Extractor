@@ -1,0 +1,7 @@
+{
+  "name": "Text Table Extractor",
+  "id": "968873904974845685",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/ui.html"
+}
