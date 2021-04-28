@@ -10,3 +10,7 @@
 .tte-white-bg {
   background-color: white;
 }
+
+.tte-width-none {
+  width: fit-content !important;
+}

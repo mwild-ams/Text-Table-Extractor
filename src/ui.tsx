@@ -96,7 +96,10 @@ class App extends React.Component<{}, State> {
               </label>
             </div>
             <div className="input inline-flex">
-              <label htmlFor="id-identifier" className="label">
+              <label
+                htmlFor="id-identifier"
+                className="label tte-width-none mr-xxsmall"
+              >
                 {this.state.prefix ? "Prefix" : "Suffix"}
               </label>
               <input
