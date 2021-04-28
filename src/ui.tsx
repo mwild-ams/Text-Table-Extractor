@@ -37,16 +37,23 @@ class App extends React.Component<{}, State> {
 
   onRadioChange(event) {
     this.setState({ prefix: event.target.value === "prefix" });
-    this.scanDocument();
   }
 
   onPrefixStringChange(event) {
     this.setState({ prefixString: event.target.value });
-    this.scanDocument();
   }
 
   componentDidMount() {
     this.scanDocument();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      prevState.prefix !== this.state.prefix ||
+      prevState.prefixString !== this.state.prefixString
+    ) {
+      this.scanDocument();
+    }
   }
 
   // Scan document function
