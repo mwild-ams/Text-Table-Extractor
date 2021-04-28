@@ -96,6 +96,7 @@ class App extends React.Component<{}, State> {
     this.onPrefixStringChange = this.onPrefixStringChange.bind(this);
   }
 
+  // Event handlers
   onExport() {
     parent.postMessage({ pluginMessage: { type: "save-csv" } }, "*");
   }
@@ -112,6 +113,7 @@ class App extends React.Component<{}, State> {
     this.setState({ prefixString: event.target.value });
   }
 
+  // Lifecycle Methods
   componentDidMount() {
     this.scanDocument();
   }
@@ -135,6 +137,7 @@ class App extends React.Component<{}, State> {
     );
   }
 
+  // App render
   render() {
     return (
       <div>
