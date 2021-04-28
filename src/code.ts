@@ -1,6 +1,6 @@
 /// <reference path="../node_modules/@figma/plugin-typings/index.d.ts" />
 
-figma.showUI(__html__);
+figma.showUI(__html__, { width: 500, height: 500 });
 
 figma.ui.onmessage = (msg) => {
   if (msg.type === "create-rectangles") {
