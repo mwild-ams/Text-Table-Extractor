@@ -105,27 +105,14 @@ figma.ui.onmessage = (msg) => {
       // Add current set to conflictIDIndices if there are any
       if (conflictIDSet.length > 0) conflictIDIndices.push(conflictIDSet);
     }
-    console.log(contentIDPairs);
-    console.log(conflictIDIndices);
+    // log results
+    // console.log(contentIDPairs);
+    // console.log(conflictIDIndices);
     figma.ui.postMessage({
       type: "scan-results",
       contentIDPairs,
       conflictIDIndices,
     });
-  }
-
-  // Save the CSV file
-  if (msg.type === "save-csv") {
-    // Prepare them, concat with ; as seperator
-    const csvPrepare = [];
-    for (let pair of contentIDPairs) {
-      csvPrepare.push(pair.join(";"));
-    }
-    // Concat the prepared pairs with line breaks
-    const csv = csvPrepare.join("\r\n");
-    console.log(csv);
-    // send message to ui to save the csv as a file
-    figma.ui.postMessage({ type: "save-csv-dialogue", csv });
   }
 
   // Close the plugin

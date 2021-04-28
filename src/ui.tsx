@@ -77,6 +77,7 @@ function BottomButtons(props) {
 interface State {
   prefix: boolean;
   prefixString: string;
+  contentIDPairs: [];
 }
 
 class App extends React.Component<{}, State> {
@@ -86,6 +87,7 @@ class App extends React.Component<{}, State> {
     this.state = {
       prefix: true,
       prefixString: "*",
+      contentIDPairs: [],
     };
 
     // This binding is necessary to make `this` work in the callback
@@ -94,11 +96,16 @@ class App extends React.Component<{}, State> {
     this.scanDocument = this.scanDocument.bind(this);
     this.onRadioChange = this.onRadioChange.bind(this);
     this.onPrefixStringChange = this.onPrefixStringChange.bind(this);
+    this.onMessage = this.onMessage.bind(this);
+    this.saveCsv = this.saveCsv.bind(this);
+    this.download = this.download.bind(this);
+    this.formatCsv = this.formatCsv.bind(this);
   }
 
   // Event handlers
   onExport() {
-    parent.postMessage({ pluginMessage: { type: "save-csv" } }, "*");
+    let csv: string = this.formatCsv(this.state.contentIDPairs);
+    this.saveCsv(csv);
   }
 
   onCancel() {
@@ -115,6 +122,8 @@ class App extends React.Component<{}, State> {
 
   // Lifecycle Methods
   componentDidMount() {
+    window.addEventListener("message", this.onMessage);
+
     this.scanDocument();
   }
 
@@ -127,6 +136,10 @@ class App extends React.Component<{}, State> {
     }
   }
 
+  componentWillUnmount() {
+    window.removeEventListener("message", this.onMessage);
+  }
+
   // Scan document function
   scanDocument() {
     const prefixBool: boolean = this.state.prefix;
@@ -135,6 +148,55 @@ class App extends React.Component<{}, State> {
       { pluginMessage: { type: "scan-document", prefixBool, fixString } },
       "*"
     );
+  }
+
+  // Format contentIDPairs to a string in csv format
+  formatCsv(contentIDPairs): string {
+    // Prepare them, concat with ; as seperator
+    const csvPrepare = [];
+    for (let pair of contentIDPairs) {
+      csvPrepare.push(pair.join(";"));
+    }
+    // Concat the prepared pairs with line breaks
+    const csv = csvPrepare.join("\r\n");
+
+    return csv;
+  }
+
+  // Register plugin message handlers
+  onMessage = (event) => {
+    if (event.data.pluginMessage.type == "scan-results") {
+      this.setState({
+        contentIDPairs: event.data.pluginMessage.contentIDPairs,
+      });
+    }
+  };
+
+  // Function to save a file
+  //https://stackoverflow.com/questions/13405129/javascript-create-and-save-file
+  download(data, filename, type) {
+    var file = new Blob([data], { type: type });
+    if (window.navigator.msSaveOrOpenBlob)
+      // IE10+
+      window.navigator.msSaveOrOpenBlob(file, filename);
+    else {
+      // Others
+      var a = document.createElement("a"),
+        url = URL.createObjectURL(file);
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function () {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, 0);
+    }
+  }
+
+  // Save CSV file
+  saveCsv(csv) {
+    this.download(csv, "contentIDTable.csv", "text/csv");
   }
 
   // App render
