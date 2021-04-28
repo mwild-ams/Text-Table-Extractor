@@ -5,21 +5,48 @@ import '../node_modules/figma-plugin-ds/dist/figma-plugin-ds.css'
 
 declare function require(path: string): any
 
-class App extends React.Component {
-  textbox: HTMLInputElement
+interface State{
+  prefix: boolean;
+  prefixString: string;
+}
 
-  countRef = (element: HTMLInputElement) => {
-    if (element) element.value = '5'
-    this.textbox = element
+class App extends React.Component<{}, State> {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      prefix: true,
+      prefixString: "*",
+    };
+
+    // This binding is necessary to make `this` work in the callback
+    this.onExport = this.onExport.bind(this);
+    this.onCancel = this.onCancel.bind(this);
+    this.scanDocument = this.scanDocument.bind(this);
   }
 
-  onCreate = () => {
-    const count = parseInt(this.textbox.value, 10)
-    parent.postMessage({ pluginMessage: { type: 'create-rectangles', count } }, '*')
+  onExport(){
+    parent.postMessage({ pluginMessage: { type: 'save-csv' } }, '*')
   }
 
-  onCancel = () => {
-    parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*')
+  onCancel() {
+    parent.postMessage({ pluginMessage: { type: 'close-plugin' } }, '*')
+  }
+  
+  componentDidMount(){
+    this.scanDocument();
+  }
+
+  // Scan document function
+  scanDocument = () => {
+    // const prefix = document.getElementById('prefix');
+    // const prefixBool = prefix.checked;
+    // const fixText = document.getElementById('id-identifier');
+    // const fixString = fixText.value;
+    // TODO:  reactify
+    const prefixBool: boolean = this.state.prefix;
+    const fixString: string = this.state.prefixString;
+    parent.postMessage({ pluginMessage: { type: 'scan-document', prefixBool, fixString } }, '*');
   }
 
   render() {
@@ -51,8 +78,8 @@ class App extends React.Component {
         {/* <p className="label">Count: <input ref={this.countRef} className="input__field"/></p> */}
       </div>
       <div className="tte-sticky-buttons-bottom tte-white-bg">
-        <button onClick={this.onCancel} className='button button--secondary m-xxxsmall'>Cancel</button>
-        <button id="create" onClick={this.onCreate} className='button button--primary m-xxxsmall'>Export as CSV</button>
+        <button onClick={this.onCancel} className='button button--secondary mt-xxsmall'>Cancel</button>
+        <button id="create" onClick={this.onExport} className='button button--primary m-xxsmall'>Export as CSV</button>
       </div>
     </div>
   }
