@@ -14,3 +14,7 @@
 .tte-width-none {
   width: fit-content !important;
 }
+
+.tte-width-70 {
+  width: 70%;
+}

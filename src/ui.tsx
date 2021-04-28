@@ -100,6 +100,12 @@ class App extends React.Component<{}, State> {
     this.saveCsv = this.saveCsv.bind(this);
     this.download = this.download.bind(this);
     this.formatCsv = this.formatCsv.bind(this);
+
+    // Add figma message event listener
+    window.addEventListener("message", this.onMessage);
+
+    // Scan the document for text pairs
+    this.scanDocument();
   }
 
   // Event handlers
@@ -121,11 +127,7 @@ class App extends React.Component<{}, State> {
   }
 
   // Lifecycle Methods
-  componentDidMount() {
-    window.addEventListener("message", this.onMessage);
-
-    this.scanDocument();
-  }
+  componentDidMount() {}
 
   componentDidUpdate(prevProps, prevState) {
     if (
@@ -213,31 +215,17 @@ class App extends React.Component<{}, State> {
             />
           </div>
 
-          <div className="section-title">Text found</div>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Id iusto
-            repellat a animi obcaecati sunt aperiam vitae quibusdam, corrupti
-            repudiandae, at voluptatum quisquam dolorem! Nam ipsa laudantium
-            molestias quo quaerat.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Id iusto
-            repellat a animi obcaecati sunt aperiam vitae quibusdam, corrupti
-            repudiandae, at voluptatum quisquam dolorem! Nam ipsa laudantium
-            molestias quo quaerat.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Id iusto
-            repellat a animi obcaecati sunt aperiam vitae quibusdam, corrupti
-            repudiandae, at voluptatum quisquam dolorem! Nam ipsa laudantium
-            molestias quo quaerat.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Id iusto
-            repellat a animi obcaecati sunt aperiam vitae quibusdam, corrupti
-            repudiandae, at voluptatum quisquam dolorem! Nam ipsa laudantium
-            molestias quo quaerat.
-          </p>
+          <div>
+            <div className="section-title">Text found</div>
+            <div className="flex column tte-width-70">
+              {this.state.contentIDPairs.map((textPair) => (
+                <div className="inline-flex row justify-content-between">
+                  <span>{textPair[0]}</span>
+                  <span>{textPair[1]}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
         <BottomButtons onCancel={this.onCancel} onExport={this.onExport} />
       </div>
