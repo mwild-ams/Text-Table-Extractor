@@ -70,9 +70,6 @@ class App extends React.Component<{}, State> {
     return (
       <div>
         <div className="p-xxsmall">
-          {/* <img src={require('./logo.svg')} /> */}
-          {/* <h2>Rectangle Creator</h2> */}
-          {/* <div className="tte-white-bg tte-sticky-search-top"> */}
           <div>
             <div className="section-title">Search settings</div>
             <div className="radio" onChange={this.onRadioChange}>
@@ -99,15 +96,15 @@ class App extends React.Component<{}, State> {
               </label>
             </div>
             <div className="input inline-flex">
-              <label htmlFor="id-identifier" className="label inline-flex">
+              <label htmlFor="id-identifier" className="label">
                 {this.state.prefix ? "Prefix" : "Suffix"}
               </label>
               <input
                 type="text"
                 id="id-identifier"
                 defaultValue="*"
-                placeholder="Please enter..."
-                className="input__field inline-flex"
+                placeholder="Searching all text."
+                className="input__field"
                 onChange={this.onPrefixStringChange}
               />
             </div>
@@ -138,7 +135,6 @@ class App extends React.Component<{}, State> {
             repudiandae, at voluptatum quisquam dolorem! Nam ipsa laudantium
             molestias quo quaerat.
           </p>
-          {/* <p className="label">Count: <input ref={this.countRef} className="input__field"/></p> */}
         </div>
         <div className="tte-sticky-buttons-bottom tte-white-bg">
           <button
