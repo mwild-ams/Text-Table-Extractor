@@ -5,6 +5,34 @@ import "../node_modules/figma-plugin-ds/dist/figma-plugin-ds.css";
 
 declare function require(path: string): any;
 
+function PrefixRadioButtons(props) {
+  return (
+    <div className="radio" onChange={props.onChange}>
+      <input
+        type="radio"
+        id="prefix"
+        name="id-fix"
+        value="prefix"
+        className="radio__button"
+        defaultChecked
+      />
+      <label htmlFor="prefix" className="radio__label">
+        Prefix
+      </label>
+      <input
+        type="radio"
+        id="suffix"
+        name="id-fix"
+        value="suffix"
+        className="radio__button"
+      />
+      <label htmlFor="suffix" className="radio__label">
+        Suffix
+      </label>
+    </div>
+  );
+}
+
 interface State {
   prefix: boolean;
   prefixString: string;
@@ -72,29 +100,7 @@ class App extends React.Component<{}, State> {
         <div className="p-xxsmall">
           <div>
             <div className="section-title">Search settings</div>
-            <div className="radio" onChange={this.onRadioChange}>
-              <input
-                type="radio"
-                id="prefix"
-                name="id-fix"
-                value="prefix"
-                className="radio__button"
-                defaultChecked
-              />
-              <label htmlFor="prefix" className="radio__label">
-                Prefix
-              </label>
-              <input
-                type="radio"
-                id="suffix"
-                name="id-fix"
-                value="suffix"
-                className="radio__button"
-              />
-              <label htmlFor="suffix" className="radio__label">
-                Suffix
-              </label>
-            </div>
+            <PrefixRadioButtons onChange={this.onRadioChange} />
             <div className="input inline-flex">
               <label
                 htmlFor="id-identifier"
