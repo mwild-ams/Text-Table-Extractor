@@ -54,6 +54,26 @@ function PrefixInputText(props) {
   );
 }
 
+function BottomButtons(props) {
+  return (
+    <div className="tte-sticky-buttons-bottom tte-white-bg">
+      <button
+        onClick={props.onCancel}
+        className="button button--secondary mt-xxsmall"
+      >
+        Cancel
+      </button>
+      <button
+        id="create"
+        onClick={props.onExport}
+        className="button button--primary m-xxsmall"
+      >
+        Export as CSV
+      </button>
+    </div>
+  );
+}
+
 interface State {
   prefix: boolean;
   prefixString: string;
@@ -154,21 +174,7 @@ class App extends React.Component<{}, State> {
             molestias quo quaerat.
           </p>
         </div>
-        <div className="tte-sticky-buttons-bottom tte-white-bg">
-          <button
-            onClick={this.onCancel}
-            className="button button--secondary mt-xxsmall"
-          >
-            Cancel
-          </button>
-          <button
-            id="create"
-            onClick={this.onExport}
-            className="button button--primary m-xxsmall"
-          >
-            Export as CSV
-          </button>
-        </div>
+        <BottomButtons onCancel={this.onCancel} onExport={this.onExport} />
       </div>
     );
   }
