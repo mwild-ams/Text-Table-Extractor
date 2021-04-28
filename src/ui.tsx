@@ -33,6 +33,27 @@ function PrefixRadioButtons(props) {
   );
 }
 
+function PrefixInputText(props) {
+  return (
+    <div className="input inline-flex">
+      <label
+        htmlFor="id-identifier"
+        className="label tte-width-none mr-xxsmall"
+      >
+        {props.prefix ? "Prefix" : "Suffix"}
+      </label>
+      <input
+        type="text"
+        id="id-identifier"
+        defaultValue="*"
+        placeholder="Searching all text."
+        className="input__field"
+        onChange={props.onChange}
+      />
+    </div>
+  );
+}
+
 interface State {
   prefix: boolean;
   prefixString: string;
@@ -101,22 +122,10 @@ class App extends React.Component<{}, State> {
           <div>
             <div className="section-title">Search settings</div>
             <PrefixRadioButtons onChange={this.onRadioChange} />
-            <div className="input inline-flex">
-              <label
-                htmlFor="id-identifier"
-                className="label tte-width-none mr-xxsmall"
-              >
-                {this.state.prefix ? "Prefix" : "Suffix"}
-              </label>
-              <input
-                type="text"
-                id="id-identifier"
-                defaultValue="*"
-                placeholder="Searching all text."
-                className="input__field"
-                onChange={this.onPrefixStringChange}
-              />
-            </div>
+            <PrefixInputText
+              prefix={this.state.prefix}
+              onChange={this.onPrefixStringChange}
+            />
           </div>
 
           <div className="section-title">Text found</div>
