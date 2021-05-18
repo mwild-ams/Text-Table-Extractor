@@ -97,7 +97,7 @@ class App extends React.Component<{}, State> {
     this.onRadioChange = this.onRadioChange.bind(this);
     this.onPrefixStringChange = this.onPrefixStringChange.bind(this);
     this.onMessage = this.onMessage.bind(this);
-    this.saveCsv = this.saveCsv.bind(this);
+    this.saveFile = this.saveFile.bind(this);
     this.download = this.download.bind(this);
     this.formatCsv = this.formatCsv.bind(this);
 
@@ -111,7 +111,7 @@ class App extends React.Component<{}, State> {
   // Event handlers
   onExport() {
     let csv: string = this.formatCsv(this.state.contentIDPairs);
-    this.saveCsv(csv);
+    this.saveFile(csv, "contentIDTable.csv", "text/csv");
   }
 
   onCancel() {
@@ -196,9 +196,9 @@ class App extends React.Component<{}, State> {
     }
   }
 
-  // Save CSV file
-  saveCsv(csv) {
-    this.download(csv, "contentIDTable.csv", "text/csv");
+  // Save file
+  saveFile(data: any, filename: string, type: string) {
+    this.download(data, filename, type);
   }
 
   // App render
