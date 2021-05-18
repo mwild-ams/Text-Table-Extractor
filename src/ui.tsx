@@ -56,7 +56,7 @@ function PrefixInputText(props) {
 
 function BottomButtons(props) {
   return (
-    <div className="tte-sticky-buttons-bottom tte-white-bg">
+    <div className="tte-fixed-buttons-bottom tte-white-bg">
       <button
         onClick={props.onCancel}
         className="button button--secondary mt-xxsmall"
@@ -229,6 +229,7 @@ class App extends React.Component<{}, State> {
             </div>
           </div>
         </div>
+        <div className="tte-bottom-spacer"></div>
         <BottomButtons onCancel={this.onCancel} onExport={this.onExport} />
       </div>
     );
