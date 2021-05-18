@@ -110,8 +110,10 @@ class App extends React.Component<{}, State> {
 
   // Event handlers
   onExport() {
-    let csv: string = this.formatCsv(this.state.contentIDPairs);
-    this.saveFile(csv, "contentIDTable.csv", "text/csv");
+    // let csv: string = this.formatCsv(this.state.contentIDPairs);
+    let json: string = JSON.stringify(this.state.contentIDPairs);
+    // this.saveFile(csv, "contentIDTable.csv", "text/csv");
+    this.saveFile(json, "contentIDPairs.json", "application/json");
   }
 
   onCancel() {
