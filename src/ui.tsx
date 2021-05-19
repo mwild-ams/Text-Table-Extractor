@@ -242,6 +242,7 @@ class App extends React.Component<{}, State> {
 
   // App render
   render() {
+    let key = 0;
     return (
       <div>
         <div className="p-xxsmall">
@@ -262,7 +263,10 @@ class App extends React.Component<{}, State> {
             <div className="section-title">Text found</div>
             <div className="flex column tte-width-70">
               {this.state.contentIDPairs.map((textPair) => (
-                <div className="inline-flex row justify-content-between type">
+                <div
+                  key={key++}
+                  className="inline-flex row justify-content-between type"
+                >
                   <span>{textPair[0]}</span>
                   <span>{textPair[1]}</span>
                 </div>
