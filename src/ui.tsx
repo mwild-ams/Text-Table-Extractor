@@ -14,7 +14,8 @@ function PrefixRadioButtons(props) {
         name="id-fix"
         value="prefix"
         className="radio__button"
-        defaultChecked
+        checked={props.prefix}
+        readOnly
       />
       <label htmlFor="prefix" className="radio__label">
         Prefix
@@ -25,6 +26,8 @@ function PrefixRadioButtons(props) {
         name="id-fix"
         value="suffix"
         className="radio__button"
+        checked={!props.prefix}
+        readOnly
       />
       <label htmlFor="suffix" className="radio__label">
         Suffix
@@ -96,6 +99,7 @@ class App extends React.Component<{}, State> {
     this.scanDocument = this.scanDocument.bind(this);
     this.onRadioChange = this.onRadioChange.bind(this);
     this.onPrefixStringChange = this.onPrefixStringChange.bind(this);
+    this.saveSettings = this.saveSettings.bind(this);
     this.onMessage = this.onMessage.bind(this);
     this.saveFile = this.saveFile.bind(this);
     this.download = this.download.bind(this);
@@ -104,8 +108,11 @@ class App extends React.Component<{}, State> {
     // Add figma message event listener
     window.addEventListener("message", this.onMessage);
 
-    // Scan the document for text pairs
-    this.scanDocument();
+    // Load previous settings of the plugin
+    parent.postMessage(
+      { pluginMessage: { type: "load-previous-settings" } },
+      "*"
+    );
   }
 
   // Event handlers
@@ -121,11 +128,27 @@ class App extends React.Component<{}, State> {
   }
 
   onRadioChange(event) {
-    this.setState({ prefix: event.target.value === "prefix" });
+    this.setState({ prefix: event.target.value === "prefix" }, () => {
+      this.saveSettings(this.state.prefix, this.state.prefixString);
+    });
   }
 
   onPrefixStringChange(event) {
     this.setState({ prefixString: event.target.value });
+    //TODO - write setting to clientStorage
+  }
+
+  saveSettings(prefix: boolean, prefixString: string) {
+    parent.postMessage(
+      {
+        pluginMessage: {
+          type: "save-previous-settings",
+          prefix,
+          prefixString,
+        },
+      },
+      "*"
+    );
   }
 
   // Lifecycle Methods
@@ -148,6 +171,7 @@ class App extends React.Component<{}, State> {
   scanDocument() {
     const prefixBool: boolean = this.state.prefix;
     const fixString: string = this.state.prefixString;
+    // TODO: change naming of these properties
     parent.postMessage(
       { pluginMessage: { type: "scan-document", prefixBool, fixString } },
       "*"
@@ -173,6 +197,25 @@ class App extends React.Component<{}, State> {
       this.setState({
         contentIDPairs: event.data.pluginMessage.contentIDPairs,
       });
+    } else if (
+      event.data.pluginMessage.type == "load-previous-settings-results"
+    ) {
+      // TODO: add content of text field
+      this.setState(
+        {
+          prefix: event.data.pluginMessage.prefix,
+        },
+        () => {
+          // Initially scan the document for text pairs
+          this.scanDocument();
+        }
+      );
+    } else if (
+      event.data.pluginMessage.type == "load-previous-settings-failed"
+    ) {
+      // Initially scan the document for text pairs with default value
+      this.scanDocument();
+      console.log("failed");
     }
   };
 
@@ -210,7 +253,10 @@ class App extends React.Component<{}, State> {
         <div className="p-xxsmall">
           <div>
             <div className="section-title">Search settings</div>
-            <PrefixRadioButtons onChange={this.onRadioChange} />
+            <PrefixRadioButtons
+              prefix={this.state.prefix}
+              onChange={this.onRadioChange}
+            />
             <PrefixInputText
               prefix={this.state.prefix}
               onChange={this.onPrefixStringChange}

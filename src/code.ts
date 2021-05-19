@@ -106,4 +106,32 @@ figma.ui.onmessage = (msg) => {
     // keep running, which shows the cancel button at the bottom of the screen.
     figma.closePlugin();
   }
+
+  // Load the previous settings
+  if (msg.type === "load-previous-settings") {
+    figma.clientStorage.getAsync("prefix").then(
+      (result) => {
+        if (typeof result == "boolean") {
+          figma.ui.postMessage({
+            type: "load-previous-settings-results",
+            prefix: result,
+          });
+        } else {
+          figma.ui.postMessage({
+            type: "load-previous-settings-failed",
+          });
+        }
+      },
+      (error) => {
+        figma.ui.postMessage({
+          type: "load-previous-settings-failed",
+        });
+      }
+    );
+  }
+
+  if (msg.type === "save-previous-settings") {
+    figma.clientStorage.setAsync("prefix", msg.prefix);
+    // figma.clientStorage.setAsync("prefixString", msg.prefixString);
+  }
 };
