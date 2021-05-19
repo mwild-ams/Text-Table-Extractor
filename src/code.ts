@@ -109,35 +109,20 @@ figma.ui.onmessage = (msg) => {
 
   // Load the previous settings
   if (msg.type === "load-previous-settings") {
-    figma.clientStorage
-      .getAsync("prefix")
-      .then((prefix) => {
-        if (typeof prefix == "boolean") {
-          figma.clientStorage.getAsync("prefixString").then((prefixString) => {
-            if (typeof prefixString == "string") {
-              figma.ui.postMessage({
-                type: "load-previous-settings-results",
-                prefix: prefix,
-                prefixString: prefixString,
-              });
-            }
-          });
-        } else {
-          figma.ui.postMessage({
-            type: "load-previous-settings-failed",
-          });
-        }
-      })
-      .catch((error) => {
-        figma.ui.postMessage({
-          type: "load-previous-settings-failed",
-        });
-      });
+    const dataPrefix: string = figma.root.getPluginData("prefix");
+    const prefixString: string = figma.root.getPluginData("prefixString");
+    let prefix: boolean = true;
+    if (dataPrefix === "false") prefix = false;
+    figma.ui.postMessage({
+      type: "load-previous-settings-results",
+      prefix: prefix,
+      prefixString: prefixString,
+    });
   }
 
   // Save the settings
   if (msg.type === "save-previous-settings") {
-    figma.clientStorage.setAsync("prefix", msg.prefix);
-    figma.clientStorage.setAsync("prefixString", msg.prefixString);
+    figma.root.setPluginData("prefix", String(msg.prefix));
+    figma.root.setPluginData("prefixString", msg.prefixString);
   }
 };

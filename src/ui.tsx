@@ -210,11 +210,6 @@ class App extends React.Component<{}, State> {
           this.scanDocument();
         }
       );
-    } else if (
-      event.data.pluginMessage.type == "load-previous-settings-failed"
-    ) {
-      // Initially scan the document for text pairs with default value
-      this.scanDocument();
     }
   };
 
