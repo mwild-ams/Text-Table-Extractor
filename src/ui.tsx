@@ -48,8 +48,8 @@ function PrefixInputText(props) {
       <input
         type="text"
         id="id-identifier"
-        defaultValue="*"
-        placeholder="Searching all text."
+        value={props.value}
+        placeholder="Searching layer names"
         className="input__field"
         onChange={props.onChange}
       />
@@ -134,8 +134,9 @@ class App extends React.Component<{}, State> {
   }
 
   onPrefixStringChange(event) {
-    this.setState({ prefixString: event.target.value });
-    //TODO - write setting to clientStorage
+    this.setState({ prefixString: event.target.value }, () => {
+      this.saveSettings(this.state.prefix, this.state.prefixString);
+    });
   }
 
   saveSettings(prefix: boolean, prefixString: string) {
@@ -197,13 +198,12 @@ class App extends React.Component<{}, State> {
       this.setState({
         contentIDPairs: event.data.pluginMessage.contentIDPairs,
       });
-    } else if (
-      event.data.pluginMessage.type == "load-previous-settings-results"
-    ) {
-      // TODO: add content of text field
+    }
+    if (event.data.pluginMessage.type == "load-previous-settings-results") {
       this.setState(
         {
           prefix: event.data.pluginMessage.prefix,
+          prefixString: event.data.pluginMessage.prefixString,
         },
         () => {
           // Initially scan the document for text pairs
@@ -215,7 +215,6 @@ class App extends React.Component<{}, State> {
     ) {
       // Initially scan the document for text pairs with default value
       this.scanDocument();
-      console.log("failed");
     }
   };
 
@@ -259,6 +258,7 @@ class App extends React.Component<{}, State> {
             />
             <PrefixInputText
               prefix={this.state.prefix}
+              value={this.state.prefixString}
               onChange={this.onPrefixStringChange}
             />
           </div>

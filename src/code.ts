@@ -109,29 +109,35 @@ figma.ui.onmessage = (msg) => {
 
   // Load the previous settings
   if (msg.type === "load-previous-settings") {
-    figma.clientStorage.getAsync("prefix").then(
-      (result) => {
-        if (typeof result == "boolean") {
-          figma.ui.postMessage({
-            type: "load-previous-settings-results",
-            prefix: result,
+    figma.clientStorage
+      .getAsync("prefix")
+      .then((prefix) => {
+        if (typeof prefix == "boolean") {
+          figma.clientStorage.getAsync("prefixString").then((prefixString) => {
+            if (typeof prefixString == "string") {
+              figma.ui.postMessage({
+                type: "load-previous-settings-results",
+                prefix: prefix,
+                prefixString: prefixString,
+              });
+            }
           });
         } else {
           figma.ui.postMessage({
             type: "load-previous-settings-failed",
           });
         }
-      },
-      (error) => {
+      })
+      .catch((error) => {
         figma.ui.postMessage({
           type: "load-previous-settings-failed",
         });
-      }
-    );
+      });
   }
 
+  // Save the settings
   if (msg.type === "save-previous-settings") {
     figma.clientStorage.setAsync("prefix", msg.prefix);
-    // figma.clientStorage.setAsync("prefixString", msg.prefixString);
+    figma.clientStorage.setAsync("prefixString", msg.prefixString);
   }
 };
