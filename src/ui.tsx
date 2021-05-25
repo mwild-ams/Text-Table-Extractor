@@ -80,7 +80,7 @@ function BottomButtons(props) {
 interface State {
   prefix: boolean;
   prefixString: string;
-  contentIDPairs: [];
+  keyPairs: [];
 }
 
 class App extends React.Component<{}, State> {
@@ -90,7 +90,7 @@ class App extends React.Component<{}, State> {
     this.state = {
       prefix: true,
       prefixString: "*",
-      contentIDPairs: [],
+      keyPairs: [],
     };
 
     // This binding is necessary to make `this` work in the callback
@@ -103,7 +103,6 @@ class App extends React.Component<{}, State> {
     this.onMessage = this.onMessage.bind(this);
     this.saveFile = this.saveFile.bind(this);
     this.download = this.download.bind(this);
-    this.formatCsv = this.formatCsv.bind(this);
 
     // Add figma message event listener
     window.addEventListener("message", this.onMessage);
@@ -117,10 +116,8 @@ class App extends React.Component<{}, State> {
 
   // Event handlers
   onExport() {
-    // let csv: string = this.formatCsv(this.state.contentIDPairs);
-    let json: string = JSON.stringify(this.state.contentIDPairs);
-    // this.saveFile(csv, "contentIDTable.csv", "text/csv");
-    this.saveFile(json, "contentIDPairs.json", "application/json");
+    let json: string = JSON.stringify(this.state.keyPairs);
+    this.saveFile(json, "keyPairs.json", "application/json");
   }
 
   onCancel() {
@@ -179,24 +176,11 @@ class App extends React.Component<{}, State> {
     );
   }
 
-  // Format contentIDPairs to a string in csv format
-  formatCsv(contentIDPairs): string {
-    // Prepare them, concat with ; as seperator
-    const csvPrepare = [];
-    for (let pair of contentIDPairs) {
-      csvPrepare.push(pair.join(";"));
-    }
-    // Concat the prepared pairs with line breaks
-    const csv = csvPrepare.join("\r\n");
-
-    return csv;
-  }
-
   // Register plugin message handlers
   onMessage = (event) => {
     if (event.data.pluginMessage.type == "scan-results") {
       this.setState({
-        contentIDPairs: event.data.pluginMessage.contentIDPairs,
+        keyPairs: event.data.pluginMessage.keyPairs,
       });
     }
     if (event.data.pluginMessage.type == "load-previous-settings-results") {
@@ -262,13 +246,25 @@ class App extends React.Component<{}, State> {
           <div>
             <div className="section-title">Text found</div>
             <div className="flex column tte-width-70">
-              {this.state.contentIDPairs.map((textPair) => (
+              {
+                // TODO: create a proper type for the objects in keyPairs
+              }
+              {this.state.keyPairs.map((textPair: any) => (
                 <div
-                  key={key++}
+                  key={textPair.key}
                   className="inline-flex row justify-content-between type"
                 >
-                  <span>{textPair[0]}</span>
-                  <span>{textPair[1]}</span>
+                  <span>{textPair.key}</span>
+                  <div className="inline-flex column justify-content-between type">
+                    {textPair.contents
+                      .filter(
+                        (v, i, a) =>
+                          a.findIndex((ae) => ae.text === v.text) === i
+                      ) // temporairily removes duplicates
+                      .map((e: any) => (
+                        <span key={e.id}>{e.text}</span>
+                      ))}
+                  </div>
                 </div>
               ))}
             </div>
